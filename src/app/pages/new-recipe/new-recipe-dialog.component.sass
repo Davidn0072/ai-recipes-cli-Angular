@@ -188,6 +188,17 @@
   font: var(--mat-sys-label-medium)
   padding: 0.4rem 0.75rem
 
+// Matches React: first 5s after opening “New recipe”
+.btn-fill-example--highlight
+  animation: fill-example-pulse 2s ease-in-out infinite
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px color-mix(in srgb, #fbbf24 80%, transparent)
+
+@keyframes fill-example-pulse
+  0%, 100%
+    opacity: 1
+  50%
+    opacity: 0.92
+
 // AI panel — mirrors React CreateRecipeModal violet card + button
 .ai-panel
   display: flex

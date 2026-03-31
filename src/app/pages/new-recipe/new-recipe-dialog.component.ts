@@ -64,6 +64,9 @@ function aiErrorMessage(err: unknown): string {
   return submitErrorMessage(err);
 }
 
+const FILL_EXAMPLE_INSTRUCTIONS =
+  '👋 Tip: click the purple "Generate with AI" button above — AI fills these steps for you ✨';
+
 @Component({
   selector: 'app-new-recipe-dialog',
   standalone: true,
@@ -86,8 +89,12 @@ export class NewRecipeDialogComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly recipeListRefresh = inject(RecipeListRefreshService);
 
+  private fillExampleHighlightTimer: ReturnType<typeof setTimeout> | null = null;
+
   readonly submitting = signal(false);
   readonly aiLoading = signal(false);
+  /** First 5s after opening “New recipe” (matches React). */
+  readonly fillExampleHighlight = signal(false);
   readonly error = signal<string | null>(null);
   readonly loadError = signal<string | null>(null);
   readonly loadingRecipe = signal(false);
@@ -111,13 +118,32 @@ export class NewRecipeDialogComponent {
   });
 
   constructor() {
+    this.destroyRef.onDestroy(() => this.clearFillExampleHighlightTimer());
+
     const id = this.recipeId();
     if (id) {
       this.loadRecipeById(id);
     } else {
       this.loadingRecipe.set(false);
       this.resetFormForCreate();
+      this.startFillExampleHighlight();
     }
+  }
+
+  private clearFillExampleHighlightTimer(): void {
+    if (this.fillExampleHighlightTimer != null) {
+      clearTimeout(this.fillExampleHighlightTimer);
+      this.fillExampleHighlightTimer = null;
+    }
+  }
+
+  private startFillExampleHighlight(): void {
+    this.clearFillExampleHighlightTimer();
+    this.fillExampleHighlight.set(true);
+    this.fillExampleHighlightTimer = window.setTimeout(() => {
+      this.fillExampleHighlightTimer = null;
+      this.fillExampleHighlight.set(false);
+    }, 5000);
   }
 
   private loadRecipeById(id: string): void {
@@ -209,18 +235,15 @@ export class NewRecipeDialogComponent {
 
   fillExample(): void {
     this.error.set(null);
-    this.form.patchValue({
-      title: 'Quick tomato pasta',
-      ingredientsText: ['spaghetti', 'olive oil', 'garlic', 'canned tomatoes', 'fresh basil'].join('\n'),
-      instructions:
-        'Cook pasta. Sauté garlic in oil, add tomatoes, simmer. Toss with pasta and basil.',
-      difficulty: 'easy',
-      cooking_time: 25,
-    });
+    this.clearFillExampleHighlightTimer();
+    this.fillExampleHighlight.set(false);
+    this.form.patchValue({ instructions: FILL_EXAMPLE_INSTRUCTIONS });
   }
 
   clearForm(): void {
     this.error.set(null);
+    this.clearFillExampleHighlightTimer();
+    this.fillExampleHighlight.set(false);
     this.resetFormForCreate();
   }
 

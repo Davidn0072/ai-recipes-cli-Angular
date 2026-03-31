@@ -33,8 +33,11 @@
     <button
       type="button"
       class="btn btn-secondary btn-small"
+      [class.btn-fill-example--highlight]="fillExampleHighlight()"
       (click)="fillExample()"
       [disabled]="submitting() || loadingRecipe() || aiLoading()"
+      aria-label="Fill with example"
+      title="Loads a sample recipe into all fields"
     >
       Fill with example
     </button>
