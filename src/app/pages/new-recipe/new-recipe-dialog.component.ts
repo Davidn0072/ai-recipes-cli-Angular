@@ -3,10 +3,18 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, finalize, map, of, switchMap } from 'rxjs';
+import {
+  MAT_DIALOG_DATA,
+  MatDialogClose,
+  MatDialogContent,
+  MatDialogRef,
+  MatDialogTitle,
+} from '@angular/material/dialog';
+import { catchError, finalize, of } from 'rxjs';
 import { normalizeRecipe } from '../../models/recipe';
 import { ApiService } from '../../services/api.service';
+import { RecipeListRefreshService } from '../../services/recipe-list-refresh.service';
+import type { NewRecipeDialogData } from './new-recipe-dialog-data';
 
 type Difficulty = 'easy' | 'medium' | 'hard';
 
@@ -33,25 +41,40 @@ function normalizeDifficulty(d?: string): Difficulty {
 }
 
 @Component({
-  selector: 'app-new-recipe',
+  selector: 'app-new-recipe-dialog',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './new-recipe.html',
-  styleUrl: './new-recipe.sass',
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogClose,
+  ],
+  templateUrl: './new-recipe-dialog.component.html',
+  styleUrl: './new-recipe-dialog.component.sass',
 })
-export class NewRecipePage {
+export class NewRecipeDialogComponent {
   private readonly fb = inject(FormBuilder);
   private readonly api = inject(ApiService);
-  private readonly router = inject(Router);
-  private readonly route = inject(ActivatedRoute);
+  private readonly dialogRef = inject(MatDialogRef<NewRecipeDialogComponent>);
+  private readonly dialogData =
+    inject<NewRecipeDialogData | undefined>(MAT_DIALOG_DATA, { optional: true }) ?? {};
   private readonly destroyRef = inject(DestroyRef);
+  private readonly recipeListRefresh = inject(RecipeListRefreshService);
 
   readonly submitting = signal(false);
   readonly error = signal<string | null>(null);
   readonly loadError = signal<string | null>(null);
   readonly loadingRecipe = signal(false);
 
-  readonly recipeId = signal<string | null>(null);
+  readonly recipeId = signal<string | null>(this.initialRecipeId());
+
+  private initialRecipeId(): string | null {
+    const raw = this.dialogData.recipeId;
+    if (raw == null || typeof raw !== 'string') return null;
+    const t = raw.trim();
+    return t !== '' ? t : null;
+  }
   readonly isEditMode = computed(() => this.recipeId() != null && this.recipeId() !== '');
 
   readonly form = this.fb.nonNullable.group({
@@ -63,28 +86,28 @@ export class NewRecipePage {
   });
 
   constructor() {
-    this.route.paramMap
+    const id = this.recipeId();
+    if (id) {
+      this.loadRecipeById(id);
+    } else {
+      this.loadingRecipe.set(false);
+      this.resetFormForCreate();
+    }
+  }
+
+  private loadRecipeById(id: string): void {
+    this.loadingRecipe.set(true);
+    this.loadError.set(null);
+    this.error.set(null);
+    this.api
+      .get<unknown>(`/recipes/${encodeURIComponent(id)}`)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
-        map((params) => params.get('recipeId')),
-        switchMap((id) => {
-          this.recipeId.set(id);
-          this.loadError.set(null);
-          this.error.set(null);
-          if (!id) {
-            this.loadingRecipe.set(false);
-            this.resetFormForCreate();
-            return of(null);
-          }
-          this.loadingRecipe.set(true);
-          return this.api.get<unknown>(`/recipes/${encodeURIComponent(id)}`).pipe(
-            catchError((err) => {
-              this.loadError.set(submitErrorMessage(err));
-              return of(null);
-            }),
-            finalize(() => this.loadingRecipe.set(false)),
-          );
+        catchError((err) => {
+          this.loadError.set(submitErrorMessage(err));
+          return of(null);
         }),
+        finalize(() => this.loadingRecipe.set(false)),
       )
       .subscribe((body) => {
         if (body == null) return;
@@ -142,13 +165,15 @@ export class NewRecipePage {
       cooking_time: cookingTime,
     };
     this.submitting.set(true);
-    const req = this.isEditMode() && id
-      ? this.api.patch<unknown>(`/recipes/${encodeURIComponent(id)}`, payload)
-      : this.api.postText('/recipes', payload);
+    const req =
+      this.isEditMode() && id
+        ? this.api.patch<unknown>(`/recipes/${encodeURIComponent(id)}`, payload)
+        : this.api.postText('/recipes', payload);
     req.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       next: () => {
         this.submitting.set(false);
-        void this.router.navigate(['/recipe-box']);
+        this.recipeListRefresh.notify();
+        this.dialogRef.close(true);
       },
       error: (err) => {
         this.submitting.set(false);
@@ -175,42 +200,13 @@ export class NewRecipePage {
     const id = this.recipeId();
     if (id) {
       this.loadError.set(null);
-      this.loadingRecipe.set(true);
-      this.api
-        .get<unknown>(`/recipes/${encodeURIComponent(id)}`)
-        .pipe(
-          takeUntilDestroyed(this.destroyRef),
-          catchError((err) => {
-            this.loadError.set(submitErrorMessage(err));
-            return of(null);
-          }),
-          finalize(() => this.loadingRecipe.set(false)),
-        )
-        .subscribe((body) => {
-          if (body == null) return;
-          const r = normalizeRecipe(body);
-          this.loadError.set(null);
-          this.form.patchValue({
-            title: r.title,
-            ingredientsText: (r.ingredients ?? []).join('\n'),
-            instructions: r.instructions ?? '',
-            difficulty: normalizeDifficulty(r.difficulty),
-            cooking_time: r.cooking_time ?? 0,
-          });
-        });
+      this.loadRecipeById(id);
     } else {
       this.resetFormForCreate();
     }
   }
 
-  /** Leave the form: close tab when opened from the sidebar, otherwise show the recipe list. */
   cancel(): void {
-    try {
-      window.opener?.focus();
-    } catch {
-      /* ignore */
-    }
-    window.close();
-    void this.router.navigate(['/recipe-box']);
+    this.dialogRef.close(false);
   }
 }

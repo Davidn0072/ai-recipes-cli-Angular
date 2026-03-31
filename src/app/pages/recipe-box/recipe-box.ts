@@ -2,10 +2,14 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, finalize, of } from 'rxjs';
 import { normalizeRecipe, type RecipeRecord } from '../../models/recipe';
+import { newRecipeDialogConfig } from '../new-recipe/new-recipe-dialog.config';
+import { NewRecipeDialogComponent } from '../new-recipe/new-recipe-dialog.component';
 import { ApiService } from '../../services/api.service';
+import { RecipeListRefreshService } from '../../services/recipe-list-refresh.service';
 
 function httpErrorMessage(err: unknown): string {
   if (err instanceof HttpErrorResponse) {
@@ -27,6 +31,8 @@ export class RecipeBoxPage implements OnInit {
   private readonly api = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly dialog = inject(MatDialog);
+  private readonly recipeListRefresh = inject(RecipeListRefreshService);
 
   readonly recipes = signal<RecipeRecord[]>([]);
   readonly loading = signal(true);
@@ -104,6 +110,6 @@ export class RecipeBoxPage implements OnInit {
 
   editRecipe(r: RecipeRecord): void {
     if (!r._id) return;
-    void this.router.navigate(['/new-recipe', r._id]);
+    this.dialog.open(NewRecipeDialogComponent, newRecipeDialogConfig({ recipeId: r._id }));
   }
 }

@@ -1,4 +1,5 @@
 import { TestBed } from '@angular/core/testing';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter } from '@angular/router';
 import { App } from './app';
 import { routes } from './app.routes';
@@ -7,7 +8,7 @@ describe('App', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [App],
-      providers: [provideRouter(routes)],
+      providers: [provideAnimationsAsync(), provideRouter(routes)],
     }).compileComponents();
   });
 

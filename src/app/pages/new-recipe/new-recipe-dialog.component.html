@@ -1,14 +1,25 @@
-<section class="page">
-  <header class="page-header">
-    <h1 class="page-title">{{ isEditMode() ? 'Edit recipe' : 'New recipe' }}</h1>
-    <p class="page-lead">
-      @if (isEditMode()) {
-        Update this recipe on the server. Use the sidebar “New recipe” link to open a blank form in another tab.
-      } @else {
-        Create a recipe and save it to the server. Opens in its own tab when you use the sidebar link.
-      }
-    </p>
-  </header>
+<div class="dialog-header">
+  <h2 mat-dialog-title class="dialog-title">{{ isEditMode() ? 'Edit recipe' : 'New recipe' }}</h2>
+  <button
+    type="button"
+    class="dialog-close"
+    mat-dialog-close
+    aria-label="Close"
+  >
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" width="20" height="20" aria-hidden="true">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  </button>
+</div>
+
+<mat-dialog-content class="dialog-content">
+  <p class="page-lead">
+    @if (isEditMode()) {
+      Update this recipe on the server. Changes apply when you save.
+    } @else {
+      Add a new recipe to your collection. Cancel or click outside to close without saving.
+    }
+  </p>
 
   @if (loadError()) {
     <div class="alert" role="alert">{{ loadError() }}</div>
@@ -121,4 +132,4 @@
       </button>
     </div>
   </form>
-</section>
+</mat-dialog-content>

@@ -1,17 +1,51 @@
-.page
-  max-width: 40rem
+:host
+  display: block
 
-.page-header
-  margin-bottom: 1rem
+.dialog-header
+  display: flex
+  align-items: flex-start
+  justify-content: space-between
+  gap: 0.75rem
+  padding: 1rem 1.25rem 0
+  margin: 0
 
-.page-title
-  font: var(--mat-sys-headline-medium)
-  margin: 0 0 0.5rem
+.dialog-title
+  font: var(--mat-sys-headline-small)
+  margin: 0
+  padding: 0.25rem 0 0
+  flex: 1
+  min-width: 0
+
+.dialog-close
+  flex-shrink: 0
+  display: flex
+  align-items: center
+  justify-content: center
+  width: 2.25rem
+  height: 2.25rem
+  margin: 0
+  padding: 0
+  border: none
+  border-radius: 0.5rem
+  background: transparent
+  color: var(--mat-sys-on-surface-variant)
+  cursor: pointer
+  transition: background 0.15s ease, color 0.15s ease
+
+  &:hover
+    background: var(--mat-sys-surface-container-highest)
+    color: var(--mat-sys-on-surface)
+
+.dialog-content
+  display: block
+  max-height: min(72vh, 42rem)
+  overflow: auto
+  padding-top: 0.5rem !important
 
 .page-lead
   font: var(--mat-sys-body-medium)
   color: var(--mat-sys-on-surface-variant)
-  margin: 0
+  margin: 0 0 1rem
 
 .loading-hint
   font: var(--mat-sys-body-medium)
@@ -63,7 +97,6 @@
   color: var(--mat-sys-on-surface)
   font: var(--mat-sys-body-large)
 
-  // Match React `placeholder:text-stone-400` (muted gray)
   $placeholder-color: #a8a29e
 
   &::placeholder

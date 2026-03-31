@@ -15,15 +15,10 @@
         <span class="nav-item-line">See all recipes and filter by name</span>
       </a>
 
-      <a
-        routerLink="/new-recipe"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="nav-item"
-      >
+      <button type="button" class="nav-item" (click)="openNewRecipeDialog()">
         <span class="nav-item-title">New recipe</span>
-        <span class="nav-item-line">Add a recipe in a new window</span>
-      </a>
+        <span class="nav-item-line">Add a recipe in a floating window</span>
+      </button>
 
       <a
         routerLink="/about"
