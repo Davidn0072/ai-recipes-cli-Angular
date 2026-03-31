@@ -183,7 +183,6 @@ export class NewRecipeDialogComponent {
   }
 
   fillExample(): void {
-    if (this.isEditMode()) return;
     this.error.set(null);
     this.form.patchValue({
       title: 'Quick tomato pasta',
@@ -197,13 +196,7 @@ export class NewRecipeDialogComponent {
 
   clearForm(): void {
     this.error.set(null);
-    const id = this.recipeId();
-    if (id) {
-      this.loadError.set(null);
-      this.loadRecipeById(id);
-    } else {
-      this.resetFormForCreate();
-    }
+    this.resetFormForCreate();
   }
 
   cancel(): void {

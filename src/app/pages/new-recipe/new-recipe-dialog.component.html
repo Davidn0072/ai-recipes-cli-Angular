@@ -34,7 +34,7 @@
       type="button"
       class="btn btn-secondary btn-small"
       (click)="fillExample()"
-      [disabled]="submitting() || loadingRecipe() || isEditMode()"
+      [disabled]="submitting() || loadingRecipe()"
     >
       Fill with example
     </button>
@@ -44,7 +44,7 @@
       (click)="clearForm()"
       [disabled]="submitting() || loadingRecipe()"
     >
-      {{ isEditMode() ? 'Reload from server' : 'Clear form' }}
+      Clear form
     </button>
   </div>
 
