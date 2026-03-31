@@ -16,6 +16,9 @@ html {
     typography: Roboto,
     density: 0,
   ));
+
+  // Base tone for overscroll / page edges
+  background-color: var(--mat-sys-background);
 }
 
 body {
@@ -24,14 +27,23 @@ body {
   // user's system settings.
   color-scheme: light;
 
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
   font: var(--mat-sys-body-medium);
 
-  // Reset the user agent margin.
   margin: 0;
+  min-height: 100%;
   height: 100%;
+
+  // Layered wash from theme tokens (primary / tertiary corners + soft vertical blend)
+  background-color: var(--mat-sys-background);
+  background-image:
+    radial-gradient(125% 90% at 100% -15%, color-mix(in srgb, var(--mat-sys-primary) 9%, transparent) 0%, transparent 55%),
+    radial-gradient(100% 75% at -20% 40%, color-mix(in srgb, var(--mat-sys-tertiary) 7%, transparent) 0%, transparent 52%),
+    linear-gradient(
+      168deg,
+      color-mix(in srgb, var(--mat-sys-surface-container-low) 85%, var(--mat-sys-background)) 0%,
+      var(--mat-sys-surface) 38%,
+      color-mix(in srgb, var(--mat-sys-surface-container-highest) 18%, var(--mat-sys-surface)) 100%
+    );
+  background-attachment: fixed;
 }
