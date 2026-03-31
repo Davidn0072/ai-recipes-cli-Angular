@@ -3,16 +3,21 @@
 
 .dialog-header
   display: flex
-  align-items: flex-start
+  align-items: center
   justify-content: space-between
-  gap: 0.75rem
-  padding: 1rem 1.25rem 0
+  gap: 0.5rem
+  // No top padding — title sits flush under rounded surface (MDC ::before removed in `styles.sass`)
+  padding: 0 1rem 0
   margin: 0
 
 .dialog-title
-  font: var(--mat-sys-headline-small)
+  // Compact band above the form; form `.dialog-content` max-height unchanged
+  font: var(--mat-sys-title-large)
+  font-weight: 600
+  line-height: 1.25
+  letter-spacing: var(--mat-sys-title-large-tracking, 0)
   margin: 0
-  padding: 0.25rem 0 0
+  padding: 0
   flex: 1
   min-width: 0
 
@@ -21,8 +26,8 @@
   display: flex
   align-items: center
   justify-content: center
-  width: 2.25rem
-  height: 2.25rem
+  width: 2rem
+  height: 2rem
   margin: 0
   padding: 0
   border: none

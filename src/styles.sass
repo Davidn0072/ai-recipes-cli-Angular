@@ -9,3 +9,14 @@
   border-radius: 1rem
   border: 1px solid var(--mat-sys-outline-variant)
 
+// MDC `mat-dialog-title` adds a tall `::before` + headline padding so text sits ~24px from top; strip that gap.
+.new-recipe-dialog-panel .mat-mdc-dialog-title.mdc-dialog__title
+  margin: 0 !important
+  padding: 0 !important
+
+  &::before
+    display: none !important
+    height: 0 !important
+    margin: 0 !important
+    content: none !important
+
