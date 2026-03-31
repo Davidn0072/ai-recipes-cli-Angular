@@ -63,8 +63,19 @@
   color: var(--mat-sys-on-surface)
   font: var(--mat-sys-body-large)
 
+  // Match React `placeholder:text-stone-400` (muted gray)
+  $placeholder-color: #a8a29e
+
   &::placeholder
-    color: var(--mat-sys-on-surface-variant)
+    color: $placeholder-color
+    opacity: 1
+
+  &::-webkit-input-placeholder
+    color: $placeholder-color
+
+  &::-moz-placeholder
+    color: $placeholder-color
+    opacity: 1
 
   &:focus
     outline: none
