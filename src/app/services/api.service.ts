@@ -43,4 +43,12 @@ export class ApiService {
   delete<T>(path: string, options?: ApiHttpOptions): Observable<T> {
     return this.http.delete<T>(this.url(path), options);
   }
+
+  /** POST when the API responds with a plain text body (e.g. `The new ID: …`). */
+  postText(path: string, body: unknown | null): Observable<string> {
+    return this.http.post(this.url(path), body, {
+      headers: { 'Content-Type': 'application/json' },
+      responseType: 'text',
+    });
+  }
 }

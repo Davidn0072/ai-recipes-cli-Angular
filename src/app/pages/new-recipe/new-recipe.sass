@@ -1,11 +1,137 @@
 .page
-  max-width: 48rem
+  max-width: 40rem
+
+.page-header
+  margin-bottom: 1rem
 
 .page-title
   font: var(--mat-sys-headline-medium)
   margin: 0 0 0.5rem
 
 .page-lead
-  font: var(--mat-sys-body-large)
+  font: var(--mat-sys-body-medium)
   color: var(--mat-sys-on-surface-variant)
   margin: 0
+
+.toolbar
+  display: flex
+  flex-wrap: wrap
+  gap: 0.5rem
+  margin-bottom: 1.25rem
+
+.form
+  display: flex
+  flex-direction: column
+  gap: 1rem
+
+.field
+  display: flex
+  flex-direction: column
+  gap: 0.35rem
+
+.label
+  font: var(--mat-sys-label-large)
+  color: var(--mat-sys-on-surface)
+
+.req
+  color: var(--mat-sys-error)
+
+.hint
+  font: var(--mat-sys-body-small)
+  color: var(--mat-sys-on-surface-variant)
+  margin: 0
+
+.field-error
+  font: var(--mat-sys-body-small)
+  color: var(--mat-sys-error)
+  margin: 0
+
+.input,
+.textarea,
+.select
+  width: 100%
+  box-sizing: border-box
+  padding: 0.625rem 0.75rem
+  border-radius: 0.5rem
+  border: 1px solid var(--mat-sys-outline-variant)
+  background: var(--mat-sys-surface)
+  color: var(--mat-sys-on-surface)
+  font: var(--mat-sys-body-large)
+
+  &::placeholder
+    color: var(--mat-sys-on-surface-variant)
+
+  &:focus
+    outline: none
+    border-color: var(--mat-sys-primary)
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mat-sys-primary) 18%, transparent)
+
+  &:disabled
+    opacity: 0.65
+
+.textarea
+  resize: vertical
+  min-height: 5rem
+  line-height: 1.45
+
+.grid-2
+  display: grid
+  gap: 1rem
+  grid-template-columns: 1fr 1fr
+
+@media (max-width: 560px)
+  .grid-2
+    grid-template-columns: 1fr
+
+.alert
+  border-radius: 0.5rem
+  padding: 0.75rem 1rem
+  font: var(--mat-sys-body-medium)
+  background: color-mix(in srgb, var(--mat-sys-error) 10%, var(--mat-sys-surface))
+  color: var(--mat-sys-error)
+  border: 1px solid color-mix(in srgb, var(--mat-sys-error) 35%, transparent)
+
+.actions
+  display: flex
+  justify-content: flex-end
+  flex-wrap: wrap
+  gap: 0.75rem
+  margin-top: 0.5rem
+  padding-top: 1rem
+  border-top: 1px solid var(--mat-sys-outline-variant)
+
+.btn
+  font: var(--mat-sys-label-large)
+  padding: 0.625rem 1.25rem
+  border-radius: 0.5rem
+  border: none
+  cursor: pointer
+  transition: opacity 0.15s ease, background 0.15s ease
+
+  &:disabled
+    opacity: 0.55
+    cursor: not-allowed
+
+.btn-primary
+  background: var(--mat-sys-primary)
+  color: var(--mat-sys-on-primary)
+
+  &:hover:not(:disabled)
+    filter: brightness(1.05)
+
+.btn-secondary
+  background: var(--mat-sys-secondary-container)
+  color: var(--mat-sys-on-secondary-container)
+  border: 1px solid var(--mat-sys-outline-variant)
+
+  &:hover:not(:disabled)
+    filter: brightness(0.97)
+
+.btn-ghost
+  background: transparent
+  color: var(--mat-sys-primary)
+  border: 1px solid var(--mat-sys-outline-variant)
+
+.btn-small
+  font: var(--mat-sys-label-medium)
+  padding: 0.4rem 0.75rem

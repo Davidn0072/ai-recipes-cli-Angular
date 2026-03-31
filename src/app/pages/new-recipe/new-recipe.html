@@ -1,4 +1,93 @@
 <section class="page">
-  <h1 class="page-title">New recipe</h1>
-  <p class="page-lead">Add a recipe — this view opens in its own window when opened from the sidebar.</p>
+  <header class="page-header">
+    <h1 class="page-title">New recipe</h1>
+    <p class="page-lead">Create a recipe and save it to the server. Opens in its own tab when you use the sidebar link.</p>
+  </header>
+
+  <div class="toolbar">
+    <button type="button" class="btn btn-secondary btn-small" (click)="fillExample()" [disabled]="submitting()">
+      Fill with example
+    </button>
+    <button type="button" class="btn btn-ghost btn-small" (click)="clearForm()" [disabled]="submitting()">
+      Clear form
+    </button>
+  </div>
+
+  <form class="form" (ngSubmit)="onSubmit()" [formGroup]="form">
+    <div class="field">
+      <label class="label" for="recipe-title">Title <span class="req">*</span></label>
+      <input
+        id="recipe-title"
+        type="text"
+        class="input"
+        formControlName="title"
+        placeholder="e.g. Cake, Omelette, Salad"
+        autocomplete="off"
+        [disabled]="submitting()"
+      />
+      @if (form.controls.title.touched && form.controls.title.hasError('required')) {
+        <p class="field-error">Title is required.</p>
+      }
+    </div>
+
+    <div class="field">
+      <label class="label" for="recipe-ingredients">Ingredients</label>
+      <p class="hint">One ingredient per line (optional for save).</p>
+      <textarea
+        id="recipe-ingredients"
+        class="textarea"
+        rows="4"
+        formControlName="ingredientsText"
+        placeholder="One ingredient per line"
+        [disabled]="submitting()"
+      ></textarea>
+    </div>
+
+    <div class="field">
+      <label class="label" for="recipe-instructions">Instructions</label>
+      <p class="hint">How to cook it (optional).</p>
+      <textarea
+        id="recipe-instructions"
+        class="textarea"
+        rows="5"
+        formControlName="instructions"
+        placeholder="Step-by-step instructions"
+        [disabled]="submitting()"
+      ></textarea>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label class="label" for="recipe-difficulty">Difficulty</label>
+        <select id="recipe-difficulty" class="select" formControlName="difficulty" [disabled]="submitting()">
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+      </div>
+      <div class="field">
+        <label class="label" for="recipe-time">Cooking time (minutes)</label>
+        <input
+          id="recipe-time"
+          type="number"
+          class="input"
+          min="0"
+          step="1"
+          formControlName="cooking_time"
+          [disabled]="submitting()"
+        />
+      </div>
+    </div>
+
+    @if (error()) {
+      <div class="alert" role="alert">{{ error() }}</div>
+    }
+
+    <div class="actions">
+      <button type="button" class="btn btn-secondary" (click)="clearForm()" [disabled]="submitting()">Reset</button>
+      <button type="submit" class="btn btn-primary" [disabled]="submitting()">
+        {{ submitting() ? 'Saving…' : 'Save recipe' }}
+      </button>
+    </div>
+  </form>
 </section>
