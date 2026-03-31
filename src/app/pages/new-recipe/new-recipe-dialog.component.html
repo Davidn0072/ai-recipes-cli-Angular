@@ -155,7 +155,7 @@
         <label class="label" for="recipe-difficulty">Difficulty</label>
         <select
           id="recipe-difficulty"
-          class="select"
+          class="select select--compact"
           formControlName="difficulty"
           [disabled]="submitting() || loadingRecipe() || aiLoading()"
         >
@@ -169,7 +169,7 @@
         <input
           id="recipe-time"
           type="number"
-          class="input"
+          class="input input--compact"
           min="0"
           step="1"
           formControlName="cooking_time"
