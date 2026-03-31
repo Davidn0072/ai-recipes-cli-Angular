@@ -1,4 +1,50 @@
 <section class="page">
-  <h1 class="page-title">About</h1>
-  <p class="page-lead">App information and credits.</p>
+  <header class="page-header">
+    <p class="page-kicker">App info</p>
+    <h1 class="page-title">About</h1>
+    <p class="page-lead page-lead--intro">
+      <span class="lead-strong">Kitchen notes</span> is a small full-stack app for collecting recipes: browse,
+      search by title, create, edit, delete, and optionally draft cooking steps with AI—everything stays in
+      sync with your own backend.
+    </p>
+  </header>
+
+  <div class="about-stack">
+    <article class="about-card">
+      <p class="about-card-kicker">How this project is built</p>
+      <ul class="about-list">
+        <li>
+          <span class="about-li-title">Frontend</span> — Angular and TypeScript (standalone components), with
+          Angular Material and the Angular router. HTTP calls use <code class="page-code">HttpClient</code>. The
+          API base URL is set in environment files (for example
+          <code class="page-code">environment.apiUrl</code> in <code class="page-code">src/environments/</code>).
+        </li>
+        <li>
+          <span class="about-li-title">Backend</span> — Node.js and Express expose a REST API for recipes (list,
+          get by id, create, update, delete). Configuration (port, database URL, AI model) is read from a
+          <code class="page-code">.env</code> file on the server.
+        </li>
+        <li>
+          <span class="about-li-title">Data</span> — MongoDB stores recipe documents via Mongoose. The UI loads
+          the list from the API and filters search on the client by recipe title.
+        </li>
+        <li>
+          <span class="about-li-title">AI</span> — Optional “generate instructions” calls the backend, which
+          uses the Vercel AI SDK against your configured model (e.g. via AI Gateway).
+        </li>
+      </ul>
+      <p class="about-hint">
+        Use the sidebar: open <span class="lead-strong">Recipe box</span> to browse and search your collection,
+        or <span class="lead-strong">New recipe</span> to add a dish in the dialog.
+      </p>
+    </article>
+
+    <article class="about-card">
+      <p class="about-card-kicker">Developer</p>
+      <p class="about-dev-name">David Nahmias</p>
+      <p class="about-dev-contact">
+        <a class="about-link" href="mailto:davidn0072@gmail.com">davidn0072@gmail.com</a>
+      </p>
+    </article>
+  </div>
 </section>

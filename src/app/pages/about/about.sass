@@ -1,11 +1,100 @@
 .page
   max-width: 48rem
 
+.page-header
+  border-bottom: 1px solid var(--mat-sys-outline-variant)
+  padding-bottom: 1.5rem
+  margin-bottom: 1.5rem
+
+.page-kicker
+  font: var(--mat-sys-label-medium)
+  font-weight: 600
+  letter-spacing: 0.12em
+  text-transform: uppercase
+  color: var(--mat-sys-primary)
+  margin: 0
+
 .page-title
   font: var(--mat-sys-headline-medium)
-  margin: 0 0 0.5rem
+  margin: 0.25rem 0 0.5rem
 
 .page-lead
-  font: var(--mat-sys-body-large)
+  font: var(--mat-sys-body-medium)
   color: var(--mat-sys-on-surface-variant)
   margin: 0
+  max-width: 36rem
+  line-height: 1.55
+
+.page-lead--intro
+  max-width: 40rem
+
+.lead-strong
+  font-weight: 600
+  color: var(--mat-sys-on-surface)
+
+.page-code
+  font-family: ui-monospace, monospace
+  font-size: 0.8rem
+  padding: 0.125rem 0.35rem
+  border-radius: 0.25rem
+  background: var(--mat-sys-surface-container-highest)
+  color: var(--mat-sys-on-surface)
+
+.about-stack
+  display: flex
+  flex-direction: column
+  gap: 1.25rem
+
+.about-card
+  border-radius: 0.75rem
+  border: 1px solid var(--mat-sys-outline-variant)
+  background: var(--mat-sys-surface)
+  padding: 1.5rem
+  box-shadow: 0 1px 3px color-mix(in srgb, var(--mat-sys-shadow) 8%, transparent)
+
+.about-card-kicker
+  margin: 0
+  font: var(--mat-sys-label-medium)
+  font-weight: 600
+  letter-spacing: 0.14em
+  text-transform: uppercase
+  color: var(--mat-sys-primary)
+
+.about-list
+  margin: 1rem 0 0
+  padding-left: 1.25rem
+  font: var(--mat-sys-body-medium)
+  color: var(--mat-sys-on-surface-variant)
+  line-height: 1.55
+
+  li + li
+    margin-top: 0.75rem
+
+.about-li-title
+  font-weight: 600
+  color: var(--mat-sys-on-surface)
+
+.about-hint
+  margin: 1.25rem 0 0
+  font: var(--mat-sys-body-medium)
+  color: var(--mat-sys-on-surface-variant)
+  line-height: 1.55
+
+.about-dev-name
+  margin: 0.75rem 0 0
+  font: var(--mat-sys-body-medium)
+  font-weight: 600
+  color: var(--mat-sys-on-surface)
+
+.about-dev-contact
+  margin: 0.5rem 0 0
+  font: var(--mat-sys-body-medium)
+
+.about-link
+  color: var(--mat-sys-primary)
+  text-decoration: underline
+  text-underline-offset: 2px
+  transition: opacity 0.15s ease
+
+  &:hover
+    opacity: 0.88
