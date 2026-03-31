@@ -147,6 +147,8 @@
                   type="button"
                   class="action-btn action-btn-update"
                   [attr.aria-label]="'Update ' + (r.title || 'recipe')"
+                  [disabled]="!r._id"
+                  (click)="editRecipe(r)"
                 >
                   <svg class="action-btn-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                     <path

@@ -1,15 +1,39 @@
 <section class="page">
   <header class="page-header">
-    <h1 class="page-title">New recipe</h1>
-    <p class="page-lead">Create a recipe and save it to the server. Opens in its own tab when you use the sidebar link.</p>
+    <h1 class="page-title">{{ isEditMode() ? 'Edit recipe' : 'New recipe' }}</h1>
+    <p class="page-lead">
+      @if (isEditMode()) {
+        Update this recipe on the server. Use the sidebar “New recipe” link to open a blank form in another tab.
+      } @else {
+        Create a recipe and save it to the server. Opens in its own tab when you use the sidebar link.
+      }
+    </p>
   </header>
 
+  @if (loadError()) {
+    <div class="alert" role="alert">{{ loadError() }}</div>
+  }
+
+  @if (loadingRecipe()) {
+    <p class="loading-hint" aria-live="polite">Loading recipe…</p>
+  }
+
   <div class="toolbar">
-    <button type="button" class="btn btn-secondary btn-small" (click)="fillExample()" [disabled]="submitting()">
+    <button
+      type="button"
+      class="btn btn-secondary btn-small"
+      (click)="fillExample()"
+      [disabled]="submitting() || loadingRecipe() || isEditMode()"
+    >
       Fill with example
     </button>
-    <button type="button" class="btn btn-ghost btn-small" (click)="clearForm()" [disabled]="submitting()">
-      Clear form
+    <button
+      type="button"
+      class="btn btn-ghost btn-small"
+      (click)="clearForm()"
+      [disabled]="submitting() || loadingRecipe()"
+    >
+      {{ isEditMode() ? 'Reload from server' : 'Clear form' }}
     </button>
   </div>
 
@@ -23,7 +47,7 @@
         formControlName="title"
         placeholder="e.g. Cake, Omelette, Salad"
         autocomplete="off"
-        [disabled]="submitting()"
+        [disabled]="submitting() || loadingRecipe()"
       />
       @if (form.controls.title.touched && form.controls.title.hasError('required')) {
         <p class="field-error">Title is required.</p>
@@ -39,7 +63,7 @@
         rows="4"
         formControlName="ingredientsText"
         placeholder="One ingredient per line"
-        [disabled]="submitting()"
+        [disabled]="submitting() || loadingRecipe()"
       ></textarea>
     </div>
 
@@ -52,14 +76,19 @@
         rows="5"
         formControlName="instructions"
         placeholder="Step-by-step instructions"
-        [disabled]="submitting()"
+        [disabled]="submitting() || loadingRecipe()"
       ></textarea>
     </div>
 
     <div class="grid-2">
       <div class="field">
         <label class="label" for="recipe-difficulty">Difficulty</label>
-        <select id="recipe-difficulty" class="select" formControlName="difficulty" [disabled]="submitting()">
+        <select
+          id="recipe-difficulty"
+          class="select"
+          formControlName="difficulty"
+          [disabled]="submitting() || loadingRecipe()"
+        >
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
           <option value="hard">Hard</option>
@@ -74,7 +103,7 @@
           min="0"
           step="1"
           formControlName="cooking_time"
-          [disabled]="submitting()"
+          [disabled]="submitting() || loadingRecipe()"
         />
       </div>
     </div>
@@ -84,9 +113,11 @@
     }
 
     <div class="actions">
-      <button type="button" class="btn btn-secondary" (click)="clearForm()" [disabled]="submitting()">Reset</button>
-      <button type="submit" class="btn btn-primary" [disabled]="submitting()">
-        {{ submitting() ? 'Saving…' : 'Save recipe' }}
+      <button type="button" class="btn btn-secondary" (click)="clearForm()" [disabled]="submitting() || loadingRecipe()">
+        {{ isEditMode() ? 'Reload from server' : 'Reset' }}
+      </button>
+      <button type="submit" class="btn btn-primary" [disabled]="submitting() || loadingRecipe() || !!loadError()">
+        {{ submitting() ? 'Saving…' : isEditMode() ? 'Update recipe' : 'Save recipe' }}
       </button>
     </div>
   </form>

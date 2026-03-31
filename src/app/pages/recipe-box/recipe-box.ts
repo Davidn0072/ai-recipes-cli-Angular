@@ -101,4 +101,9 @@ export class RecipeBoxPage implements OnInit {
     if (!d) return '—';
     return d.charAt(0).toUpperCase() + d.slice(1);
   }
+
+  editRecipe(r: RecipeRecord): void {
+    if (!r._id) return;
+    void this.router.navigate(['/new-recipe', r._id]);
+  }
 }
