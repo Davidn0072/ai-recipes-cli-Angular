@@ -38,7 +38,8 @@
 
 .dialog-content
   display: block
-  max-height: min(72vh, 42rem)
+  // Extra height for form area (+85px vs original cap); dialog `position` unchanged in config
+  max-height: min(calc(72vh + 85px), calc(42rem + 85px))
   overflow: auto
   padding-top: 0.5rem !important
 

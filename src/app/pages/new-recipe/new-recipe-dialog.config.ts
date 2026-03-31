@@ -8,7 +8,8 @@ export function newRecipeDialogConfig(
   return {
     width: 'min(824px, calc(100vw - 32px))',
     maxWidth: '95vw',
-    maxHeight: '90vh',
+    // Allow the dialog surface to grow with the taller form area (+85px); `position` unchanged.
+    maxHeight: 'calc(90vh + 85px)',
     panelClass: 'new-recipe-dialog-panel',
     autoFocus: 'first-tabbable',
     closeOnNavigation: true,
