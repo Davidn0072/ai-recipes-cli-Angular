@@ -9,7 +9,7 @@ import { NG_APP_BUILD_API_URL } from './ng-app-api-url.generated';
  */
 function resolveApiUrl(value: string): string {
   const trimmed = (value ?? '').trim();
-  return trimmed.length > 0 ? trimmed : 'https://ai-recipes-srv.vercel.app';
+  return trimmed.length > 0 ? trimmed : 'https://api.example.com/';
 }
 
 export const environment: Environment = {
