@@ -202,4 +202,15 @@ export class NewRecipePage {
       this.resetFormForCreate();
     }
   }
+
+  /** Leave the form: close tab when opened from the sidebar, otherwise show the recipe list. */
+  cancel(): void {
+    try {
+      window.opener?.focus();
+    } catch {
+      /* ignore */
+    }
+    window.close();
+    void this.router.navigate(['/recipe-box']);
+  }
 }

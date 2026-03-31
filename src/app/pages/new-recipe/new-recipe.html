@@ -113,8 +113,8 @@
     }
 
     <div class="actions">
-      <button type="button" class="btn btn-secondary" (click)="clearForm()" [disabled]="submitting() || loadingRecipe()">
-        {{ isEditMode() ? 'Reload from server' : 'Reset' }}
+      <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="submitting() || loadingRecipe()">
+        Cancel
       </button>
       <button type="submit" class="btn btn-primary" [disabled]="submitting() || loadingRecipe() || !!loadError()">
         {{ submitting() ? 'Saving…' : isEditMode() ? 'Update recipe' : 'Save recipe' }}
