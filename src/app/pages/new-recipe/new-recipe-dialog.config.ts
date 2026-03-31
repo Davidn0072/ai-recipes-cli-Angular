@@ -12,6 +12,8 @@ export function newRecipeDialogConfig(
     panelClass: 'new-recipe-dialog-panel',
     autoFocus: 'first-tabbable',
     closeOnNavigation: true,
+    /** Places the dialog below the top of the viewport; offset above `5vh` (16px total). */
+    position: { top: 'calc(5vh - 16px)' },
     data,
   };
 }
