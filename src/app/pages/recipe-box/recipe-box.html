@@ -1,4 +1,150 @@
 <section class="page">
-  <h1 class="page-title">Recipe box</h1>
-  <p class="page-lead">Browse and search your recipes, or filter by name.</p>
+  <header class="page-header">
+    <p class="page-kicker">Your collection</p>
+    <h1 class="page-title">Browse &amp; search</h1>
+    <p class="page-lead">
+      Every recipe from the server in one place. Search matches the recipe title only. The filter is stored in the
+      URL as <code class="page-code">?q=…</code> so you can refresh or share a link.
+    </p>
+  </header>
+
+  <div class="search-wrap">
+    <label class="sr-only" for="recipe-search">Search recipes</label>
+    <span class="search-icon" aria-hidden="true">
+      <svg class="search-svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+        />
+      </svg>
+    </span>
+    <input
+      id="recipe-search"
+      type="search"
+      class="search-input"
+      placeholder="Search by title…"
+      [value]="searchQuery()"
+      (input)="onSearchInput($event)"
+      [disabled]="loading() && recipes().length === 0 && !error()"
+    />
+  </div>
+
+  @if (!error() && !loading() && recipes().length > 0) {
+    <p class="count-line">
+      Showing <span class="count-num">{{ filtered().length }}</span>
+      @if (searchQuery().trim()) {
+        of <span class="count-num">{{ recipes().length }}</span>
+      }
+      recipe{{ filtered().length === 1 ? '' : 's' }}
+    </p>
+  }
+
+  @if (error()) {
+    <div class="alert alert-error" role="alert">
+      <p class="alert-title">Couldn’t load recipes</p>
+      <p class="alert-body">{{ error() }}</p>
+    </div>
+  }
+
+  @if (loading() && recipes().length === 0 && !error()) {
+    <div class="loading-block" aria-busy="true">
+      <p class="loading-title">Loading your recipes…</p>
+      <p class="loading-text">The first request after idle can take a few seconds while the server wakes up.</p>
+      <div class="skeleton-list">
+        @for (i of [0, 1, 2]; track i) {
+          <div class="skeleton-card"></div>
+        }
+      </div>
+    </div>
+  } @else if (!loading() && filtered().length === 0 && !error()) {
+    <div class="empty-state">
+      <p class="empty-title">{{ searchQuery().trim() ? 'No matches' : 'No recipes yet' }}</p>
+      <p class="empty-text">
+        @if (searchQuery().trim()) {
+          No recipe title contains “{{ searchQuery().trim() }}”. Try another title search.
+        } @else {
+          Add your first recipe with “New recipe” in the sidebar.
+        }
+      </p>
+    </div>
+  } @else if (!error()) {
+    <ul class="recipe-list">
+      @for (r of filtered(); track r._id || r.title) {
+        <li class="recipe-list-item">
+          <article class="recipe-card">
+            <div class="recipe-card-accent" aria-hidden="true"></div>
+            <div class="recipe-card-inner">
+              <div class="recipe-card-head">
+                <h2 class="recipe-title">{{ r.title || '(Untitled)' }}</h2>
+                @if (r.difficulty) {
+                  <span class="badge" [attr.data-diff]="r.difficulty.toLowerCase()">{{
+                    formatDifficulty(r.difficulty)
+                  }}</span>
+                }
+              </div>
+              @if (r.cooking_time != null && r.cooking_time > 0) {
+                <div class="recipe-time">
+                  <svg class="time-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>{{ r.cooking_time }} min</span>
+                </div>
+              }
+              <div class="recipe-panels">
+                <div class="recipe-panel">
+                  <div class="recipe-panel-icon ing" aria-hidden="true">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M4.125 6.75h.008v.008H4.125V6.75zm0 5.25h.008v.008H4.125v-.008zm0 5.25h.008v.008H4.125v-.008z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="recipe-panel-body">
+                    <p class="recipe-panel-label">Ingredients</p>
+                    <p class="recipe-panel-text">
+                      @if (ingredientPreview(r); as line) {
+                        {{ line }}
+                      } @else {
+                        <span class="muted">No ingredients listed</span>
+                      }
+                    </p>
+                  </div>
+                </div>
+                <div class="recipe-panel">
+                  <div class="recipe-panel-icon ins" aria-hidden="true">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+                      />
+                    </svg>
+                  </div>
+                  <div class="recipe-panel-body">
+                    <p class="recipe-panel-label">Instructions</p>
+                    <p class="recipe-panel-text">
+                      @if (instructionPreview(r.instructions); as prev) {
+                        {{ prev }}
+                      } @else {
+                        <span class="muted">No instructions</span>
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </li>
+      }
+    </ul>
+  }
 </section>

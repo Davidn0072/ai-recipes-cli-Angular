@@ -1,11 +1,303 @@
 .page
-  max-width: 48rem
+  max-width: 52rem
+
+.page-header
+  border-bottom: 1px solid var(--mat-sys-outline-variant)
+  padding-bottom: 1.5rem
+  margin-bottom: 1.5rem
+
+.page-kicker
+  font: var(--mat-sys-label-medium)
+  font-weight: 600
+  letter-spacing: 0.12em
+  text-transform: uppercase
+  color: var(--mat-sys-primary)
+  margin: 0
 
 .page-title
   font: var(--mat-sys-headline-medium)
-  margin: 0 0 0.5rem
+  margin: 0.25rem 0 0.5rem
 
 .page-lead
-  font: var(--mat-sys-body-large)
+  font: var(--mat-sys-body-medium)
   color: var(--mat-sys-on-surface-variant)
   margin: 0
+  max-width: 36rem
+  line-height: 1.5
+
+.page-code
+  font-family: ui-monospace, monospace
+  font-size: 0.8rem
+  padding: 0.125rem 0.35rem
+  border-radius: 0.25rem
+  background: var(--mat-sys-surface-container-highest)
+
+.sr-only
+  position: absolute
+  width: 1px
+  height: 1px
+  padding: 0
+  margin: -1px
+  overflow: hidden
+  clip: rect(0, 0, 0, 0)
+  white-space: nowrap
+  border: 0
+
+.search-wrap
+  position: relative
+  margin-bottom: 1.25rem
+
+.search-icon
+  position: absolute
+  inset: 0 auto 0 1rem
+  display: flex
+  align-items: center
+  pointer-events: none
+  color: var(--mat-sys-on-surface-variant)
+
+.search-svg
+  width: 1.25rem
+  height: 1.25rem
+
+.search-input
+  width: 100%
+  box-sizing: border-box
+  padding: 0.875rem 1rem 0.875rem 2.75rem
+  border-radius: 1rem
+  border: 1px solid var(--mat-sys-outline-variant)
+  background: var(--mat-sys-surface)
+  color: var(--mat-sys-on-surface)
+  font: var(--mat-sys-body-large)
+  outline: none
+  transition: border-color 0.15s ease, box-shadow 0.15s ease
+
+  &::placeholder
+    color: var(--mat-sys-on-surface-variant)
+
+  &:focus
+    border-color: var(--mat-sys-primary)
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--mat-sys-primary) 20%, transparent)
+
+  &:disabled
+    opacity: 0.6
+
+.count-line
+  font: var(--mat-sys-body-medium)
+  color: var(--mat-sys-on-surface-variant)
+  margin: 0 0 1rem
+
+.count-num
+  font-weight: 600
+  font-variant-numeric: tabular-nums
+  color: var(--mat-sys-on-surface)
+
+.alert
+  border-radius: 1rem
+  padding: 0.75rem 1rem
+  margin-bottom: 1rem
+  font: var(--mat-sys-body-medium)
+
+.alert-error
+  border: 1px solid color-mix(in srgb, var(--mat-sys-error) 40%, transparent)
+  background: color-mix(in srgb, var(--mat-sys-error) 8%, var(--mat-sys-surface))
+  color: var(--mat-sys-on-surface)
+
+.alert-title
+  font-weight: 600
+  margin: 0
+
+.alert-body
+  margin: 0.35rem 0 0
+  opacity: 0.9
+
+.loading-block
+  margin-top: 0.5rem
+
+.loading-title
+  font-weight: 600
+  margin: 0 0 0.35rem
+  color: var(--mat-sys-on-surface)
+
+.loading-text
+  font: var(--mat-sys-body-medium)
+  color: var(--mat-sys-on-surface-variant)
+  margin: 0 0 1rem
+
+.skeleton-list
+  display: flex
+  flex-direction: column
+  gap: 0.75rem
+
+.skeleton-card
+  height: 5.5rem
+  border-radius: 1rem
+  background: linear-gradient(90deg, var(--mat-sys-surface-container-highest) 0%, var(--mat-sys-surface-container) 50%, var(--mat-sys-surface-container-highest) 100%)
+  background-size: 200% 100%
+  animation: shimmer 1.2s ease-in-out infinite
+
+@keyframes shimmer
+  0%
+    background-position: 100% 0
+  100%
+    background-position: -100% 0
+
+.empty-state
+  text-align: center
+  padding: 3rem 1.5rem
+  border-radius: 1rem
+  border: 1px dashed var(--mat-sys-outline-variant)
+  background: var(--mat-sys-surface-container-low)
+
+.empty-title
+  font: var(--mat-sys-title-large)
+  margin: 0 0 0.5rem
+  color: var(--mat-sys-on-surface)
+
+.empty-text
+  font: var(--mat-sys-body-medium)
+  color: var(--mat-sys-on-surface-variant)
+  margin: 0
+
+.recipe-list
+  list-style: none
+  margin: 0
+  padding: 0
+  display: flex
+  flex-direction: column
+  gap: 0.75rem
+
+.recipe-list-item
+  margin: 0
+
+.recipe-card
+  position: relative
+  overflow: hidden
+  border-radius: 1rem
+  border: 1px solid var(--mat-sys-outline-variant)
+  background: var(--mat-sys-surface)
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--mat-sys-shadow) 12%, transparent)
+  transition: border-color 0.15s ease, box-shadow 0.15s ease
+
+  &:hover
+    border-color: color-mix(in srgb, var(--mat-sys-primary) 35%, var(--mat-sys-outline-variant))
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--mat-sys-shadow) 18%, transparent)
+
+.recipe-card-accent
+  position: absolute
+  left: 0
+  top: 0
+  bottom: 0
+  width: 4px
+  border-radius: 1rem 0 0 1rem
+  background: linear-gradient(180deg, var(--mat-sys-primary) 0%, color-mix(in srgb, var(--mat-sys-primary) 70%, var(--mat-sys-tertiary)) 100%)
+
+.recipe-card-inner
+  padding: 1rem 1rem 1rem 1.125rem
+
+.recipe-card-head
+  display: flex
+  flex-wrap: wrap
+  align-items: flex-start
+  justify-content: space-between
+  gap: 0.5rem
+
+.recipe-title
+  flex: 1
+  min-width: 0
+  font: var(--mat-sys-title-large)
+  margin: 0
+
+.badge
+  flex-shrink: 0
+  font: var(--mat-sys-label-medium)
+  padding: 0.2rem 0.6rem
+  border-radius: 999px
+
+  &[data-diff="easy"]
+    background: color-mix(in srgb, #059669 12%, transparent)
+    color: #065f46
+
+  &[data-diff="medium"]
+    background: color-mix(in srgb, #d97706 14%, transparent)
+    color: #78350f
+
+  &[data-diff="hard"]
+    background: color-mix(in srgb, #e11d48 12%, transparent)
+    color: #9f1239
+
+  &:not([data-diff="easy"]):not([data-diff="medium"]):not([data-diff="hard"])
+    background: var(--mat-sys-surface-container-highest)
+    color: var(--mat-sys-on-surface-variant)
+
+.recipe-time
+  display: inline-flex
+  align-items: center
+  gap: 0.35rem
+  margin-top: 0.5rem
+  font: var(--mat-sys-body-medium)
+  color: var(--mat-sys-on-surface-variant)
+
+.time-icon
+  width: 1rem
+  height: 1rem
+  color: var(--mat-sys-primary)
+
+.recipe-panels
+  margin-top: 0.75rem
+  border-radius: 0.75rem
+  border: 1px solid var(--mat-sys-outline-variant)
+  overflow: hidden
+  background: linear-gradient(180deg, var(--mat-sys-surface-container-low) 0%, var(--mat-sys-surface) 100%)
+
+.recipe-panel
+  display: flex
+  gap: 0.875rem
+  padding: 0.875rem 1rem
+  border-top: 1px solid var(--mat-sys-outline-variant)
+
+  &:first-child
+    border-top: none
+
+.recipe-panel-icon
+  flex-shrink: 0
+  width: 2.5rem
+  height: 2.5rem
+  display: flex
+  align-items: center
+  justify-content: center
+  border-radius: 0.75rem
+
+  &.ing
+    background: color-mix(in srgb, var(--mat-sys-primary) 14%, transparent)
+    color: var(--mat-sys-primary)
+
+  &.ins
+    background: color-mix(in srgb, var(--mat-sys-tertiary) 14%, transparent)
+    color: var(--mat-sys-tertiary)
+
+  svg
+    width: 1.25rem
+    height: 1.25rem
+
+.recipe-panel-body
+  flex: 1
+  min-width: 0
+  padding-top: 0.125rem
+
+.recipe-panel-label
+  font: var(--mat-sys-label-small)
+  font-weight: 600
+  letter-spacing: 0.06em
+  text-transform: uppercase
+  color: var(--mat-sys-on-surface-variant)
+  margin: 0
+
+.recipe-panel-text
+  font: var(--mat-sys-body-medium)
+  margin: 0.35rem 0 0
+  color: var(--mat-sys-on-surface)
+  word-break: break-word
+
+.muted
+  font-style: italic
+  color: var(--mat-sys-on-surface-variant)
