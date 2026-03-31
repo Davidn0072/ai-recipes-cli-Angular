@@ -1,7 +1,7 @@
 import type { Environment } from './environment.type';
 import { NG_APP_BUILD_API_URL } from './ng-app-api-url.generated';
 
-console.log('NG_APP_BUILD_API_URL TIME  build:', NG_APP_BUILD_API_URL);
+//console.log('NG_APP_BUILD_API_URL TIME  build:', NG_APP_BUILD_API_URL);
 
 /**
  * `NG_APP_BUILD_API_URL` is written by `scripts/prebuild-env.mjs` from `NG_APP_API_URL`
@@ -9,7 +9,7 @@ console.log('NG_APP_BUILD_API_URL TIME  build:', NG_APP_BUILD_API_URL);
  */
 function resolveApiUrl(value: string): string {
   const trimmed = (value ?? '').trim();
-  return trimmed.length > 0 ? trimmed : 'https://default-server.com';
+  return trimmed.length > 0 ? trimmed : 'https://ai-recipes-srv.vercel.app';
 }
 
 export const environment: Environment = {
