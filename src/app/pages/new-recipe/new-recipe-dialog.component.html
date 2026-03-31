@@ -34,7 +34,7 @@
       type="button"
       class="btn btn-secondary btn-small"
       (click)="fillExample()"
-      [disabled]="submitting() || loadingRecipe()"
+      [disabled]="submitting() || loadingRecipe() || aiLoading()"
     >
       Fill with example
     </button>
@@ -42,7 +42,7 @@
       type="button"
       class="btn btn-ghost btn-small"
       (click)="clearForm()"
-      [disabled]="submitting() || loadingRecipe()"
+      [disabled]="submitting() || loadingRecipe() || aiLoading()"
     >
       Clear form
     </button>
@@ -58,7 +58,7 @@
         formControlName="title"
         placeholder="e.g. Cake, Omelette, Salad"
         autocomplete="off"
-        [disabled]="submitting() || loadingRecipe()"
+        [disabled]="submitting() || loadingRecipe() || aiLoading()"
       />
       @if (form.controls.title.touched && form.controls.title.hasError('required')) {
         <p class="field-error">Title is required.</p>
@@ -67,27 +67,83 @@
 
     <div class="field">
       <label class="label" for="recipe-ingredients">Ingredients</label>
-      <p class="hint">One ingredient per line (optional for save).</p>
+      <p class="hint">One ingredient per line (optional for save; required for AI).</p>
       <textarea
         id="recipe-ingredients"
         class="textarea"
         rows="3"
         formControlName="ingredientsText"
         placeholder="One ingredient per line"
-        [disabled]="submitting() || loadingRecipe()"
+        [disabled]="submitting() || loadingRecipe() || aiLoading()"
       ></textarea>
+    </div>
+
+    <div class="ai-panel" aria-label="AI-assisted instructions">
+      <div class="ai-panel-text">
+        <div class="ai-panel-heading">
+          <svg class="ai-sparkles" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.035-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
+            />
+          </svg>
+          <p class="ai-panel-title">Get AI-written instructions</p>
+        </div>
+        <p class="ai-panel-desc">
+          Uses your title and ingredients; <span class="ai-panel-em">AI generates</span> step-by-step cooking steps in the
+          <span class="ai-panel-em">Instructions</span> field below. Optional.
+        </p>
+      </div>
+      <button
+        type="button"
+        class="ai-generate-btn"
+        (click)="generateWithAi()"
+        [disabled]="submitting() || aiLoading() || !canUseAi()"
+        [attr.aria-busy]="aiLoading()"
+        [attr.aria-label]="
+          canUseAi()
+            ? 'Generate cooking instructions with AI from title and ingredients into the Instructions field'
+            : 'Add a title and at least one ingredient to generate instructions with AI'
+        "
+        [attr.title]="
+          canUseAi()
+            ? 'AI writes step-by-step instructions into Instructions (uses title + ingredients)'
+            : 'Add a title and at least one ingredient first'
+        "
+      >
+        @if (aiLoading()) {
+          <span class="ai-spinner" aria-hidden="true"></span>
+          Generating…
+        } @else {
+          <svg class="ai-sparkles ai-sparkles--btn" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.035-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
+            />
+          </svg>
+          <span class="ai-badge" aria-hidden="true">AI</span>
+          Generate with AI
+        }
+      </button>
     </div>
 
     <div class="field">
       <label class="label" for="recipe-instructions">Instructions</label>
-      <p class="hint">How to cook it (optional).</p>
+      <p class="hint">
+        How to cook it — type your own steps, or use <span class="hint-strong">Generate with AI</span> above so
+        <span class="hint-strong">AI writes</span> the steps into this field.
+      </p>
       <textarea
         id="recipe-instructions"
         class="textarea"
         rows="3"
         formControlName="instructions"
         placeholder="Step-by-step instructions"
-        [disabled]="submitting() || loadingRecipe()"
+        [disabled]="submitting() || loadingRecipe() || aiLoading()"
       ></textarea>
     </div>
 
@@ -98,7 +154,7 @@
           id="recipe-difficulty"
           class="select"
           formControlName="difficulty"
-          [disabled]="submitting() || loadingRecipe()"
+          [disabled]="submitting() || loadingRecipe() || aiLoading()"
         >
           <option value="easy">Easy</option>
           <option value="medium">Medium</option>
@@ -114,7 +170,7 @@
           min="0"
           step="1"
           formControlName="cooking_time"
-          [disabled]="submitting() || loadingRecipe()"
+          [disabled]="submitting() || loadingRecipe() || aiLoading()"
         />
       </div>
     </div>
@@ -124,10 +180,10 @@
     }
 
     <div class="actions">
-      <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="submitting() || loadingRecipe()">
+      <button type="button" class="btn btn-secondary" (click)="cancel()" [disabled]="submitting() || loadingRecipe() || aiLoading()">
         Cancel
       </button>
-      <button type="submit" class="btn btn-primary" [disabled]="submitting() || loadingRecipe() || !!loadError()">
+      <button type="submit" class="btn btn-primary" [disabled]="submitting() || loadingRecipe() || aiLoading() || !!loadError()">
         {{ submitting() ? 'Saving…' : isEditMode() ? 'Update recipe' : 'Save recipe' }}
       </button>
     </div>

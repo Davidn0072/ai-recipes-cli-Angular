@@ -40,6 +40,30 @@ function normalizeDifficulty(d?: string): Difficulty {
   return 'easy';
 }
 
+const AI_SHORT_COST_NOTE =
+  'Note: The recipe is intentionally short to reduce AI usage costs.';
+
+function isShortDueToCostYes(v: unknown): boolean {
+  if (v === true) return true;
+  return typeof v === 'string' && v.trim().toLowerCase() === 'yes';
+}
+
+function appendShortDueToCostNote(instructions: string, append: boolean): string {
+  if (!append) return instructions;
+  const trimmed = instructions.trimEnd();
+  if (trimmed.endsWith(AI_SHORT_COST_NOTE)) return instructions;
+  if (!trimmed) return AI_SHORT_COST_NOTE;
+  return `${trimmed}\n\n${AI_SHORT_COST_NOTE}`;
+}
+
+function aiErrorMessage(err: unknown): string {
+  if (err instanceof HttpErrorResponse && err.error != null && typeof err.error === 'object') {
+    const o = err.error as Record<string, unknown>;
+    if (typeof o['message'] === 'string') return o['message'];
+  }
+  return submitErrorMessage(err);
+}
+
 @Component({
   selector: 'app-new-recipe-dialog',
   standalone: true,
@@ -63,6 +87,7 @@ export class NewRecipeDialogComponent {
   private readonly recipeListRefresh = inject(RecipeListRefreshService);
 
   readonly submitting = signal(false);
+  readonly aiLoading = signal(false);
   readonly error = signal<string | null>(null);
   readonly loadError = signal<string | null>(null);
   readonly loadingRecipe = signal(false);
@@ -197,6 +222,56 @@ export class NewRecipeDialogComponent {
   clearForm(): void {
     this.error.set(null);
     this.resetFormForCreate();
+  }
+
+  canUseAi(): boolean {
+    const v = this.form.getRawValue();
+    const title = v.title.trim();
+    if (!title) return false;
+    return parseIngredients(v.ingredientsText).length > 0;
+  }
+
+  generateWithAi(): void {
+    const title = this.form.controls.title.value?.trim() ?? '';
+    if (!title) {
+      this.error.set('Add a title before requesting AI instructions.');
+      return;
+    }
+    const ingredients = parseIngredients(this.form.controls.ingredientsText.value ?? '');
+    if (ingredients.length === 0) {
+      this.error.set('Add at least one ingredient before requesting AI instructions.');
+      return;
+    }
+    this.error.set(null);
+    this.aiLoading.set(true);
+    this.api
+      .post<Record<string, unknown>>('/recipes/generate', { title, ingredients })
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.aiLoading.set(false)),
+      )
+      .subscribe({
+        next: (data) => {
+          const recipeText = typeof data['recipe'] === 'string' ? data['recipe'] : '';
+          const diffRaw = typeof data['difficulty'] === 'string' ? data['difficulty'] : 'easy';
+          const timeRaw = data['cooking_time'];
+          const cookingNum =
+            typeof timeRaw === 'number' && Number.isFinite(timeRaw)
+              ? timeRaw
+              : parseInt(String(timeRaw ?? '0'), 10) || 0;
+          const shortDue = isShortDueToCostYes(data['short_due_to_cost']);
+          const v = this.form.getRawValue();
+          const mergedInstructions = recipeText.trim() || v.instructions;
+          this.form.patchValue({
+            instructions: appendShortDueToCostNote(mergedInstructions, shortDue),
+            difficulty: normalizeDifficulty(diffRaw),
+            cooking_time: cookingNum >= 0 ? cookingNum : v.cooking_time,
+          });
+        },
+        error: (err) => {
+          this.error.set(aiErrorMessage(err));
+        },
+      });
   }
 
   cancel(): void {

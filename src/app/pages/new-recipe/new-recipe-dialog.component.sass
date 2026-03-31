@@ -81,6 +81,10 @@
   color: var(--mat-sys-on-surface-variant)
   margin: 0
 
+.hint-strong
+  font-weight: 600
+  color: color-mix(in srgb, var(--mat-sys-on-surface) 88%, var(--mat-sys-on-surface-variant))
+
 .field-error
   font: var(--mat-sys-body-small)
   color: var(--mat-sys-error)
@@ -183,3 +187,120 @@
 .btn-small
   font: var(--mat-sys-label-medium)
   padding: 0.4rem 0.75rem
+
+// AI panel — mirrors React CreateRecipeModal violet card + button
+.ai-panel
+  display: flex
+  flex-direction: column
+  gap: 0.75rem
+  padding: 0.75rem 1rem
+  border-radius: 0.75rem
+  border: 2px solid color-mix(in srgb, #a78bfa 90%, transparent)
+  background: linear-gradient(135deg, #f5f3ff 0%, #ffffff 45%, rgba(237, 233, 254, 0.4) 100%)
+  box-shadow: 0 4px 6px -1px rgba(91, 33, 182, 0.1), 0 2px 4px -2px rgba(91, 33, 182, 0.08), 0 0 0 1px rgba(17, 24, 39, 0.07)
+
+@media (min-width: 640px)
+  .ai-panel
+    flex-direction: row
+    align-items: center
+    justify-content: space-between
+
+.ai-panel-text
+  min-width: 0
+  flex: 1
+  display: flex
+  flex-direction: column
+  gap: 0.25rem
+
+.ai-panel-heading
+  display: flex
+  align-items: flex-start
+  gap: 0.5rem
+
+.ai-sparkles
+  flex-shrink: 0
+  width: 1.25rem
+  height: 1.25rem
+  margin-top: 0.125rem
+  color: #7c3aed
+
+// Button sparkles: same icon as React AiSparklesIcon — white strokes on violet (not panel violet)
+.ai-generate-btn .ai-sparkles
+  color: #fff
+
+.ai-sparkles--btn
+  margin-top: 0
+  width: 1.25rem
+  height: 1.25rem
+
+.ai-panel-title
+  margin: 0
+  font: var(--mat-sys-body-medium)
+  font-weight: 600
+  letter-spacing: -0.01em
+  color: #4c1d95
+
+.ai-panel-desc
+  margin: 0
+  padding-left: 1.75rem
+  font: var(--mat-sys-body-small)
+  line-height: 1.5
+  color: #57534e
+
+.ai-panel-em
+  font-weight: 600
+  color: #292524
+
+.ai-generate-btn
+  display: inline-flex
+  flex-shrink: 0
+  align-items: center
+  justify-content: center
+  gap: 0.5rem
+  padding: 0.625rem 1rem
+  border-radius: 0.5rem
+  border: none
+  background: #7c3aed
+  color: #fff
+  font: var(--mat-sys-label-large)
+  font-weight: 600
+  font-size: 0.875rem
+  cursor: pointer
+  box-shadow: 0 4px 6px -1px rgba(91, 33, 182, 0.25)
+  transition: background 0.2s ease, box-shadow 0.2s ease, opacity 0.15s ease
+
+  &:hover:not(:disabled)
+    background: #6d28d9
+
+  &:focus-visible
+    outline: none
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #8b5cf6
+
+  &:disabled
+    opacity: 0.5
+    pointer-events: none
+    cursor: not-allowed
+
+.ai-badge
+  display: inline-block
+  padding: 0.125rem 0.375rem
+  border-radius: 0.375rem
+  background: rgba(255, 255, 255, 0.2)
+  font-size: 0.65rem
+  font-weight: 700
+  letter-spacing: 0.05em
+  text-transform: uppercase
+  font-variant-numeric: tabular-nums
+
+.ai-spinner
+  display: inline-block
+  width: 1rem
+  height: 1rem
+  border: 2px solid rgba(255, 255, 255, 0.4)
+  border-top-color: #fff
+  border-radius: 50%
+  animation: ai-spin 0.7s linear infinite
+
+@keyframes ai-spin
+  to
+    transform: rotate(360deg)
