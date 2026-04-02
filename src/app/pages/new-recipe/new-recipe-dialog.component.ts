@@ -64,8 +64,15 @@ function aiErrorMessage(err: unknown): string {
   return submitErrorMessage(err);
 }
 
-const FILL_EXAMPLE_INSTRUCTIONS =
-  '👋 Tip: click the purple "Generate with AI" button above — AI fills these steps for you ✨';
+/** Same sample data as React `EXAMPLE_FORM` (Project-V2 CreateRecipeModal). */
+const EXAMPLE_FORM = {
+  title: 'Quick tomato pasta',
+  ingredientsText: 'spaghetti\nolive oil\ngarlic\ncanned tomatoes\nfresh basil',
+  instructions:
+    '👋 Tip: click the purple "Generate with AI" button above — AI fills these steps for you ✨',
+  difficulty: 'easy' as Difficulty,
+  cooking_time: 25,
+};
 
 @Component({
   selector: 'app-new-recipe-dialog',
@@ -90,11 +97,15 @@ export class NewRecipeDialogComponent {
   private readonly recipeListRefresh = inject(RecipeListRefreshService);
 
   private fillExampleHighlightTimer: ReturnType<typeof setTimeout> | null = null;
+  private aiCueStartTimer: ReturnType<typeof setTimeout> | null = null;
+  private aiCueEndTimer: ReturnType<typeof setTimeout> | null = null;
 
   readonly submitting = signal(false);
   readonly aiLoading = signal(false);
   /** First 5s after opening “New recipe” (matches React). */
   readonly fillExampleHighlight = signal(false);
+  /** After Fill with example: pulse starts at 5s, ends at 10s (matches React). */
+  readonly aiButtonCue = signal(false);
   readonly error = signal<string | null>(null);
   readonly loadError = signal<string | null>(null);
   readonly loadingRecipe = signal(false);
@@ -118,7 +129,10 @@ export class NewRecipeDialogComponent {
   });
 
   constructor() {
-    this.destroyRef.onDestroy(() => this.clearFillExampleHighlightTimer());
+    this.destroyRef.onDestroy(() => {
+      this.clearFillExampleHighlightTimer();
+      this.clearAiCueTimers();
+    });
 
     const id = this.recipeId();
     if (id) {
@@ -144,6 +158,17 @@ export class NewRecipeDialogComponent {
       this.fillExampleHighlightTimer = null;
       this.fillExampleHighlight.set(false);
     }, 5000);
+  }
+
+  private clearAiCueTimers(): void {
+    if (this.aiCueStartTimer != null) {
+      clearTimeout(this.aiCueStartTimer);
+      this.aiCueStartTimer = null;
+    }
+    if (this.aiCueEndTimer != null) {
+      clearTimeout(this.aiCueEndTimer);
+      this.aiCueEndTimer = null;
+    }
   }
 
   private loadRecipeById(id: string): void {
@@ -237,13 +262,31 @@ export class NewRecipeDialogComponent {
     this.error.set(null);
     this.clearFillExampleHighlightTimer();
     this.fillExampleHighlight.set(false);
-    this.form.patchValue({ instructions: FILL_EXAMPLE_INSTRUCTIONS });
+    this.clearAiCueTimers();
+    this.aiButtonCue.set(false);
+    this.form.patchValue({
+      title: EXAMPLE_FORM.title,
+      ingredientsText: EXAMPLE_FORM.ingredientsText,
+      instructions: EXAMPLE_FORM.instructions,
+      difficulty: EXAMPLE_FORM.difficulty,
+      cooking_time: EXAMPLE_FORM.cooking_time,
+    });
+    this.aiCueStartTimer = window.setTimeout(() => {
+      this.aiCueStartTimer = null;
+      this.aiButtonCue.set(true);
+    }, 5000);
+    this.aiCueEndTimer = window.setTimeout(() => {
+      this.aiCueEndTimer = null;
+      this.aiButtonCue.set(false);
+    }, 10000);
   }
 
   clearForm(): void {
     this.error.set(null);
     this.clearFillExampleHighlightTimer();
     this.fillExampleHighlight.set(false);
+    this.clearAiCueTimers();
+    this.aiButtonCue.set(false);
     this.resetFormForCreate();
   }
 
@@ -265,6 +308,8 @@ export class NewRecipeDialogComponent {
       this.error.set('Add at least one ingredient before requesting AI instructions.');
       return;
     }
+    this.clearAiCueTimers();
+    this.aiButtonCue.set(false);
     this.error.set(null);
     this.aiLoading.set(true);
     this.api

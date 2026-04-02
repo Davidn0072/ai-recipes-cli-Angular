@@ -102,6 +102,7 @@
       <button
         type="button"
         class="ai-generate-btn"
+        [class.ai-generate-btn--cue]="aiButtonCue() && canUseAi() && !aiLoading()"
         (click)="generateWithAi()"
         [disabled]="submitting() || aiLoading() || !canUseAi()"
         [attr.aria-busy]="aiLoading()"
